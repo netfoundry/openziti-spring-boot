@@ -6,16 +6,14 @@ hostsFileError() {
 	exit 1;
 }
 
-echo Checking hosts file setup
-getent hosts ziti-edge-controller > /dev/null || { hostsFileError; }
-getent hosts ziti-edge-router > /dev/null || { hostsFileError; }
+#echo Checking hosts file setup
+#getent hosts ziti-edge-controller > /dev/null || { hostsFileError; }
+#getent hosts ziti-edge-router > /dev/null || { hostsFileError; }
 
-echo Logging in to OpenZiti
-while ! ziti edge login ziti-edge-controller:1280 -u admin -p admin -y > /dev/null 2>&1
-do
-	echo "  Network is still initializing"
-	sleep 5
-done
+if !ziti edge list edge-routers > /dev/null 2>&1; then
+	echo "Error: Log into OpenZiti before running this script" 
+	exit 1
+fi
 
 echo Creating identities
 ziti edge create identity device private-service -o private-service.jwt -a "services"
@@ -31,9 +29,9 @@ ziti edge create config demo-service-config ziti-tunneler-client.v1 '{"hostname"
 ziti edge create service demo-service --configs demo-service-config -a "demo-service"
 
 echo Creating identity network access policies
-ziti edge create edge-router-policy public-router-client-access --identity-roles "#clients" --edge-router-roles "@ziti-edge-router"
-ziti edge create edge-router-policy public-router-service-access --identity-roles "#services" --edge-router-roles "@ziti-edge-router"
-ziti edge create service-edge-router-policy public-router-access --service-roles "#demo-service" --edge-router-roles "@ziti-edge-router"
+ziti edge create edge-router-policy public-router-client-access --identity-roles "#clients" --edge-router-roles "#public"
+ziti edge create edge-router-policy public-router-service-access --identity-roles "#services" --edge-router-roles "#public"
+ziti edge create service-edge-router-policy public-router-access --service-roles "#demo-service" --edge-router-roles "#public"
 
 echo Creating identity service policies
 ziti edge create service-policy service-bind-policy Bind --identity-roles "#services" --service-roles "#demo-service"
