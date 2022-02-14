@@ -1,24 +1,13 @@
-hostsFileError() {
-	echo Error: The ziti edge controller or edge router hostname could not be resolved.  
-	echo These commands can be used to configure the hosts if you are using the docker-compose environment:
-	echo 'echo "127.0.0.1       ziti-edge-controller" | sudo tee -a /etc/hosts'
-	echo 'echo "127.0.0.1       ziti-edge-router" | sudo tee -a /etc/hosts'
-	exit 1;
-}
-
-#echo Checking hosts file setup
-#getent hosts ziti-edge-controller > /dev/null || { hostsFileError; }
-#getent hosts ziti-edge-router > /dev/null || { hostsFileError; }
-
 if !ziti edge list edge-routers > /dev/null 2>&1; then
 	echo "Error: Log into OpenZiti before running this script" 
 	exit 1
 fi
 
+rm private-service.jwt client.jwt private-service.json client.json 2> /dev/null
+
 echo Creating identities
 ziti edge create identity device private-service -o private-service.jwt -a "services"
 ziti edge create identity device client -o client.jwt -a "clients"
-ziti edge create identity device zdew-client -o zdew-client.jwt -a "clients"
 
 echo Enrolling identities
 ziti edge enroll -j private-service.jwt

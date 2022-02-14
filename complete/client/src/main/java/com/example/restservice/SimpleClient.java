@@ -44,7 +44,17 @@ public class SimpleClient {
     ZitiContext zitiContext = null;
     try {
       zitiContext = Ziti.newContext(identityFile, "".toCharArray());
-      Thread.sleep(3000);
+
+      long end = System.currentTimeMillis() + 10000;
+
+      while (null == zitiContext.getService(serviceName) && System.currentTimeMillis() < end) {
+        log.info("Waiting for {} to become available", serviceName);
+        Thread.sleep(200);
+      }
+
+      if (null == zitiContext.getService(serviceName)) {
+        throw new IllegalArgumentException(String.format("Service %s is not available on the OpenZiti network",serviceName));
+      }
 
       log.info("Dialing service");
       ZitiConnection conn = zitiContext.dial(serviceName);
