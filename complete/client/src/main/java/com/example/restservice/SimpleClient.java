@@ -45,14 +45,7 @@ public class SimpleClient {
     try {
       zitiContext = Ziti.newContext(identityFile, "".toCharArray());
 
-      long end = System.currentTimeMillis() + 10000;
-
-      while (null == zitiContext.getService(serviceName) && System.currentTimeMillis() < end) {
-        log.info("Waiting for {} to become available", serviceName);
-        Thread.sleep(200);
-      }
-
-      if (null == zitiContext.getService(serviceName)) {
+      if (null == zitiContext.getService(serviceName,10000)) {
         throw new IllegalArgumentException(String.format("Service %s is not available on the OpenZiti network",serviceName));
       }
 
