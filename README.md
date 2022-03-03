@@ -20,7 +20,7 @@ setup steps that are already familiar to you. Either way, you end up with workin
 This example will use a very simple OpenZiti network.
 
 <p align="center">
-<img id="exampleNetworkImage" src="DemoNetwork.png" alt="Example OpenZiti Network" width="300"/>
+<img id="exampleNetworkImage" src="images/DemoNetwork.png" alt="Example OpenZiti Network" width="300"/>
 </p>
 
 It isn't important right now to understand all of components of the OpenZiti network. The important things you need to know are:
@@ -87,7 +87,7 @@ getLatestZiti yes
 
 The script will write out the two identity files (client.json and private-service.json) that you will need for the Java code.
 
-This repository includes a file called [NETWORK-SETUP.md](network/NETWORK-SETUP.md) if you want to learn more about what the script is doing and why.
+This repository includes a file called [NETWORK-README.md](network/NETWORK-README.md) if you want to learn more about what the script is doing and why.
 
 # Resetting the Ziti demo network
 You're done with this article or things have gone really off the rails, and you want to start over.  
